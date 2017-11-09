@@ -64,8 +64,8 @@ public class Controller {
         Pair<RPS, RPS> result1 = playerRPS1.sendRPS();
         Pair<RPS, RPS> result2 = playerRPS2.sendRPS();
 
-        playerRPS1.onResult(countVictory(result1, result2), result2.getKey(), result2.getValue());
-        playerRPS2.onResult(countVictory(result2, result1), result1.getKey(), result1.getValue());
+        playerRPS1.onResult(countVictory(result1, result2), result1, result2);
+        playerRPS2.onResult(countVictory(result2, result1), result2, result1);
         set_three.setText("終わり");
     }
 

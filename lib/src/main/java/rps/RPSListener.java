@@ -8,10 +8,10 @@ public interface RPSListener {
      * 結果を返すためのコールバック
      *
      * @param victory 自分のチームの勝利数
-     * @param enemy1  敵チームの出したもの1
-     * @param enemy2  敵チームの出したもの2
+     * @param own     自分出したもの
+     * @param enemy   敵チームの出したもの
      */
-    void onResult(int victory, RPS enemy1, RPS enemy2);
+    void onResult(int victory, Pair<RPS, RPS> own, Pair<RPS, RPS> enemy);
 
     /**
      * RPSの送信
