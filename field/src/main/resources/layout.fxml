@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox fx:id="main" alignment="TOP_CENTER" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="kosen.janken.Controller">
+    <children>
+        <VBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity">
+            <children>
+                <GridPane prefHeight="100.0" prefWidth="379.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <HBox alignment="CENTER" prefHeight="600.0" prefWidth="124.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <children>
+                                <!--<Button onAction="#buttonsHandler"  fx:id="select_four" mnemonicParsing="false" prefHeight="27.0" prefWidth="66.0" text="選択..." />-->
+                                <Label fx:id="set_four" prefHeight="17.0" prefWidth="120" text="Not set." />
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="600.0" prefWidth="124.0">
+                            <children>
+                                <Button fx:id="select_one" mnemonicParsing="false" onAction="#buttonsHandler" prefHeight="27.0" prefWidth="66.0" text="選択..." />
+                                <Label fx:id="set_one" prefHeight="17.0" prefWidth="120" text="Not set." />
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="600.0" prefWidth="124.0" GridPane.columnIndex="1">
+                            <children>
+                                <Button fx:id="select_two" mnemonicParsing="false" onAction="#buttonsHandler" prefHeight="27.0" prefWidth="66.0" text="選択..." />
+                                <Label fx:id="set_two" prefHeight="17.0" prefWidth="120" text="Not set." />
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="600.0" prefWidth="124.0" GridPane.rowIndex="1">
+                            <children>
+                                <!--<Button onAction="#buttonsHandler"  fx:id="select_three" mnemonicParsing="false" prefHeight="27.0" prefWidth="66.0" text="選択..." />-->
+                                <Label fx:id="set_three" prefHeight="17.0" prefWidth="120" text="Not set." />
+                            </children>
+                        </HBox>
+                    </children>
+                </GridPane>
+            <HBox alignment="CENTER_RIGHT">
+               <children>
+                  <Button fx:id="run_once" mnemonicParsing="false" text="Run in once" onAction="#buttonsHandler"/>
+               </children>
+            </HBox>
+            </children>
+        </VBox>
+    </children>
+</HBox>
