@@ -4,6 +4,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -27,13 +29,25 @@ public class Controller {
     private Label set_three;
     @FXML
     private Label set_four;
+    @FXML
+    private ImageView player11, player12, player21, player22;
+
+    public final Image rock = new Image(getClass().getResourceAsStream("/rock.png"));
+    public final Image paper = new Image(getClass().getResourceAsStream("/paper.png"));
+    public final Image scissor = new Image(getClass().getResourceAsStream("/scissor.png"));
 
     private File playerOneJar, playerTwoJar;
+    private RPSListener playerRPS1, playerRPS2;
 
     private Stage primaryStage;
 
     public void init(Stage primaryStage) {
         this.primaryStage = primaryStage;
+
+        player11.setImage(rock);
+        player12.setImage(rock);
+        player21.setImage(rock);
+        player22.setImage(rock);
     }
 
     public void buttonsHandler(ActionEvent event) {
@@ -41,32 +55,51 @@ public class Controller {
             case "select_one"://ファイル取得
                 playerOneJar = getJarFile();
                 if (playerOneJar != null) {
-                    set_one.setText(playerOneJar.getName());
+                    playerRPS1 = loadClass(playerOneJar);
                 }
                 break;
             case "select_two"://ファイル取得
                 playerTwoJar = getJarFile();
                 if (playerTwoJar != null) {
-                    set_two.setText(playerTwoJar.getName());
+                    playerRPS2 = loadClass(playerTwoJar);
                 }
                 break;
             case "run_once": //一度実行
                 if (playerTwoJar != null && playerOneJar != null) executeTask();
+                break;
+            case "run_10000":
+                if (playerTwoJar != null && playerOneJar != null)
+                    for (int i = 0; i < 10000; i++) {
+                        executeTask();
+                    }
                 break;
         }
 
     }
 
     public void executeTask() {
-        set_three.setText("クラスロード");
-        RPSListener playerRPS1 = loadClass(playerOneJar);
-        RPSListener playerRPS2 = loadClass(playerTwoJar);
+//        set_three.setText("クラスロード");
+//        RPSListener playerRPS1 = loadClass(playerOneJar);
+//        RPSListener playerRPS2 = loadClass(playerTwoJar);
         Pair<RPS, RPS> result1 = playerRPS1.sendRPS();
         Pair<RPS, RPS> result2 = playerRPS2.sendRPS();
 
+        player11.setImage(result2Image(result1.getKey()));
+        player12.setImage(result2Image(result1.getValue()));
+        player21.setImage(result2Image(result2.getKey()));
+        player22.setImage(result2Image(result2.getValue()));
+
         playerRPS1.onResult(countVictory(result1, result2), result1, result2);
         playerRPS2.onResult(countVictory(result2, result1), result2, result1);
-        set_three.setText("終わり");
+    }
+
+    public Image result2Image(RPS rps) {
+        if (rps.getRps() == RPS.ROCK)
+            return rock;
+        else if (rps.getRps() == RPS.PAPER)
+            return paper;
+        else
+            return scissor;
     }
 
     public RPSListener loadClass(File file) {

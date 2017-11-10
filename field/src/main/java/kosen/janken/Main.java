@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import rps.*;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,7 +21,8 @@ public class Main extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layout.fxml"));
         Parent root = fxmlLoader.load();
         primaryStage.setTitle("じゃんけんするよ");
-        primaryStage.setScene(new Scene(root, MIN_SCREEN_WIDTH, MIN_SCREEN_HEIGHT));
+        Scene scene = new Scene(root, MIN_SCREEN_WIDTH, MIN_SCREEN_HEIGHT);
+        primaryStage.setScene(scene);
         primaryStage.setMinWidth(MIN_SCREEN_WIDTH);
         primaryStage.setMinHeight(MIN_SCREEN_HEIGHT);
         Controller controller = fxmlLoader.getController();
