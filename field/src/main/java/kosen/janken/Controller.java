@@ -1,5 +1,6 @@
 package kosen.janken;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -22,13 +23,7 @@ public class Controller {
     @FXML
     private Pane main;
     @FXML
-    private Label set_one;
-    @FXML
-    private Label set_two;
-    @FXML
-    private Label set_three;
-    @FXML
-    private Label set_four;
+    private Label condition1, condition2;
     @FXML
     private ImageView player11, player12, player21, player22;
 
@@ -56,51 +51,88 @@ public class Controller {
                 playerOneJar = getJarFile();
                 if (playerOneJar != null) {
                     playerRPS1 = loadClass(playerOneJar);
+                    condition1.setText(playerOneJar.getName() + " is set.");
                 }
                 break;
             case "select_two"://ファイル取得
                 playerTwoJar = getJarFile();
                 if (playerTwoJar != null) {
                     playerRPS2 = loadClass(playerTwoJar);
+                    condition2.setText(playerOneJar.getName() + " is set.");
                 }
                 break;
             case "run_once": //一度実行
-                if (playerTwoJar != null && playerOneJar != null) executeTask();
+                if (playerTwoJar != null && playerOneJar != null)/* executeTask()*/ ;
                 break;
             case "run_10000":
                 if (playerTwoJar != null && playerOneJar != null)
-                    for (int i = 0; i < 10000; i++) {
-                        executeTask();
-                    }
+
+                    new ExecuteTasks().start();
                 break;
         }
 
     }
 
-    public void executeTask() {
-//        set_three.setText("クラスロード");
-//        RPSListener playerRPS1 = loadClass(playerOneJar);
-//        RPSListener playerRPS2 = loadClass(playerTwoJar);
-        Pair<RPS, RPS> result1 = playerRPS1.sendRPS();
-        Pair<RPS, RPS> result2 = playerRPS2.sendRPS();
+    class ExecuteTasks extends Thread {
+        @Override
+        public void run() {
+            int team1VictoryCount = 0;
+            int team2VictoryCount = 0;
 
-        player11.setImage(result2Image(result1.getKey()));
-        player12.setImage(result2Image(result1.getValue()));
-        player21.setImage(result2Image(result2.getKey()));
-        player22.setImage(result2Image(result2.getValue()));
+            for (int i = 0; i < 10000; i++) {
+                Pair<RPS, RPS> result1 = playerRPS1.sendRPS();
+                Pair<RPS, RPS> result2 = playerRPS2.sendRPS();
+                int team1Victory = countVictory(result1, result2);
+                int team2Victory = countVictory(result2, result1);
+                team1VictoryCount += team1Victory;
+                team2VictoryCount += team2Victory;
+                final int team1 = team1VictoryCount;
+                final int team2 = team2VictoryCount;
+                Platform.runLater(() -> condition1.setText("勝利数：" + team1));
+                Platform.runLater(() -> condition2.setText("勝利数：" + team2));
+                if (i % 10 == 0) {
+                    Platform.runLater(() -> player11.setImage(result2Image(result1.getKey())));
+                    Platform.runLater(() -> player12.setImage(result2Image(result1.getValue())));
+                    Platform.runLater(() -> player21.setImage(result2Image(result2.getKey())));
+                    Platform.runLater(() -> player22.setImage(result2Image(result2.getValue())));
+                }
+//                player11.setImage(result2Image(result1.getKey()));
+//                player12.setImage(result2Image(result1.getValue()));
+//                player21.setImage(result2Image(result2.getKey()));
+//                player22.setImage(result2Image(result2.getValue()));
 
-        playerRPS1.onResult(countVictory(result1, result2), result1, result2);
-        playerRPS2.onResult(countVictory(result2, result1), result2, result1);
+                playerRPS1.onResult(team1Victory, result1, result2);
+                playerRPS2.onResult(team2Victory, result2, result1);
+            }
+        }
+
+        public Image result2Image(RPS rps) {
+            if (rps.getRps() == RPS.ROCK)
+                return rock;
+            else if (rps.getRps() == RPS.PAPER)
+                return paper;
+            else
+                return scissor;
+        }
+
+        private int countVictory(Pair<RPS, RPS> origin, Pair<RPS, RPS> enemy) {
+            System.out.println("自:" + origin.getKey().getRpsString() + ":" + origin.getValue().getRpsString() + "敵:" + enemy.getKey().getRpsString() + ":" + enemy.getValue().getRpsString());
+            //        System.out.println("x" + (enemy.getKey().getRps() + enemy.getValue().getRps() * 3) + " y" + (origin.getKey().getRps() + origin.getValue().getRps() * 3));
+            int[][] vicotryMap =
+                    {{0, 2, 0, 2, 2, 0, 0, 0, 0},//縦が自分、横が敵
+                            {1, 1, 0, 1, 1, 0, 0, 0, 0},
+                            {1, 0, 1, 0, 0, 0, 1, 0, 1},
+                            {1, 1, 0, 1, 1, 0, 0, 0, 0},
+                            {0, 0, 0, 0, 0, 2, 0, 2, 2},
+                            {0, 0, 0, 0, 1, 1, 0, 1, 1},
+                            {1, 0, 1, 0, 0, 0, 1, 0, 1},
+                            {0, 0, 0, 0, 1, 1, 0, 1, 1},
+                            {2, 0, 2, 0, 0, 0, 2, 0, 0}};
+            return vicotryMap[origin.getKey().getRps() + origin.getValue().getRps() * 3][enemy.getKey().getRps() + enemy.getValue().getRps() * 3];
+        }
+
     }
 
-    public Image result2Image(RPS rps) {
-        if (rps.getRps() == RPS.ROCK)
-            return rock;
-        else if (rps.getRps() == RPS.PAPER)
-            return paper;
-        else
-            return scissor;
-    }
 
     public RPSListener loadClass(File file) {
         try {
@@ -124,21 +156,6 @@ public class Controller {
         return null;
     }
 
-    private int countVictory(Pair<RPS, RPS> origin, Pair<RPS, RPS> enemy) {
-        System.out.println("自:" + origin.getKey().getRpsString() + ":" + origin.getValue().getRpsString() + "敵:" + enemy.getKey().getRpsString() + ":" + enemy.getValue().getRpsString());
-        //        System.out.println("x" + (enemy.getKey().getRps() + enemy.getValue().getRps() * 3) + " y" + (origin.getKey().getRps() + origin.getValue().getRps() * 3));
-        int[][] vicotryMap =
-                {{0, 2, 0, 2, 2, 0, 0, 0, 0},//縦が自分、横が敵
-                        {1, 1, 0, 1, 1, 0, 0, 0, 0},
-                        {1, 0, 1, 0, 0, 0, 1, 0, 1},
-                        {1, 1, 0, 1, 1, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 2, 0, 2, 2},
-                        {0, 0, 0, 0, 1, 1, 0, 1, 1},
-                        {1, 0, 1, 0, 0, 0, 1, 0, 1},
-                        {0, 0, 0, 0, 1, 1, 0, 1, 1},
-                        {2, 0, 2, 0, 0, 0, 2, 0, 0}};
-        return vicotryMap[origin.getKey().getRps() + origin.getValue().getRps() * 3][enemy.getKey().getRps() + enemy.getValue().getRps() * 3];
-    }
 
     /**
      * 勝利判定

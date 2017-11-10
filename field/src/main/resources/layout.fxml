@@ -10,79 +10,91 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox fx:id="main" alignment="TOP_CENTER" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="kosen.janken.Controller">
+<HBox fx:id="main" alignment="TOP_CENTER" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="kosen.janken.Controller">
     <children>
         <VBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity">
             <children>
                 <HBox>
                     <children>
-                        <Button fx:id="select_one" mnemonicParsing="false" onAction="#buttonsHandler" prefHeight="27.0"
-                                prefWidth="90.0" text="選択...">
+                        <Button fx:id="select_one" mnemonicParsing="false" onAction="#buttonsHandler" prefHeight="27.0" prefWidth="90.0" text="選択1...">
                             <HBox.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </HBox.margin>
                         </Button>
-                        <Button fx:id="select_two" mnemonicParsing="false" onAction="#buttonsHandler" prefHeight="27.0"
-                                prefWidth="94.0" text="選択...">
+                        <Button fx:id="select_two" mnemonicParsing="false" onAction="#buttonsHandler" prefHeight="27.0" prefWidth="94.0" text="選択2...">
                             <HBox.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </HBox.margin>
                         </Button>
                     </children>
                 </HBox>
                 <GridPane prefHeight="132.0" prefWidth="600.0">
                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="80.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="80.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="35.0" minHeight="6.0" prefHeight="24.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <HBox alignment="CENTER" prefHeight="600.0" prefWidth="124.0" GridPane.columnIndex="1"
-                              GridPane.rowIndex="1">
+                        <HBox alignment="CENTER" prefHeight="600.0" prefWidth="124.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                             <children>
-                                <ImageView fx:id="player22" fitHeight="57.0" fitWidth="65.0" pickOnBounds="true"
-                                           preserveRatio="true"/>
-                                <Label fx:id="set_four" prefHeight="17.0" prefWidth="120" text="Team2Player2"/>
+                                <ImageView fx:id="player22" fitHeight="57.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" />
+                                <Label fx:id="set_four" prefHeight="17.0" prefWidth="120" text="Team2Player2" />
                             </children>
                         </HBox>
                         <HBox alignment="CENTER" prefHeight="600.0" prefWidth="124.0">
                             <children>
-                                <Label fx:id="set_one" prefHeight="17.0" prefWidth="120" text="Team1Player1"/>
-                                <ImageView fx:id="player11" fitHeight="57.0" fitWidth="65.0" pickOnBounds="true"
-                                           preserveRatio="true"/>
+                                <Label fx:id="set_one" prefHeight="17.0" prefWidth="120" text="Team1Player1" />
+                                <ImageView fx:id="player11" fitHeight="57.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" />
                             </children>
                         </HBox>
                         <HBox alignment="CENTER" prefHeight="600.0" prefWidth="124.0" GridPane.columnIndex="1">
                             <children>
-                                <ImageView fx:id="player21" fitHeight="57.0" fitWidth="65.0" pickOnBounds="true"
-                                           preserveRatio="true"/>
-                                <Label fx:id="set_two" prefHeight="17.0" prefWidth="120" text="Team2Player1"/>
+                                <ImageView fx:id="player21" fitHeight="57.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" />
+                                <Label fx:id="set_two" prefHeight="17.0" prefWidth="120" text="Team2Player1" />
                             </children>
                         </HBox>
                         <HBox alignment="CENTER" prefHeight="600.0" prefWidth="124.0" GridPane.rowIndex="1">
                             <children>
-                                <Label fx:id="set_three" prefHeight="17.0" prefWidth="120" text="Team1Player2"/>
-                                <ImageView fx:id="player12" fitHeight="57.0" fitWidth="65.0" pickOnBounds="true"
-                                           preserveRatio="true"/>
+                                <Label fx:id="set_three" prefHeight="17.0" prefWidth="120" text="Team1Player2" />
+                                <ImageView fx:id="player12" fitHeight="57.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" />
                             </children>
                         </HBox>
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
+                     <children>
+                        <Label fx:id="condition1" text="Not set." />
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <GridPane.margin>
+                        <Insets left="20.0" />
+                     </GridPane.margin>
+                  </HBox>
+                  <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                     <children>
+                        <Label fx:id="condition2" text="Not set." />
+                     </children>
+                     <padding>
+                        <Insets right="20.0" />
+                     </padding>
+                  </HBox>
                     </children>
                     <padding>
-                        <Insets bottom="5.0" right="5.0" top="5.0"/>
+                        <Insets bottom="5.0" right="5.0" top="5.0" />
                     </padding>
                 </GridPane>
                 <HBox alignment="CENTER_RIGHT">
                     <children>
                         <Button fx:id="run_10000" mnemonicParsing="false" onAction="#buttonsHandler" text="Run 10000">
                             <HBox.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </HBox.margin>
                         </Button>
-                        <Button fx:id="run_once" mnemonicParsing="false" onAction="#buttonsHandler" text="Run in once"/>
+                        <Button fx:id="run_once" mnemonicParsing="false" onAction="#buttonsHandler" text="Run in once" />
                     </children>
                 </HBox>
             </children>
