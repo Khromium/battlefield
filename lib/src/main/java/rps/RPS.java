@@ -17,9 +17,6 @@ public class RPS {
     }
 
     public String getRpsString(){
-        return convert(rps);
-    }
-    public String convert(int rps) {
         if (rps == RPS.ROCK) return "グー";
         if (rps == RPS.SCISSOR) return "チョキ";
         if (rps == RPS.PAPER) return "パー";
