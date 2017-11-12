@@ -23,6 +23,12 @@ $ ./gradlew jar
 sampleを用いる場合は　`sample/libs` に配置して下さい。
 
 プロジェクト内に `Engine` クラスを作成し `RCSListener` をimplementsして下さい。
+アルゴリズムを一通り書き終わった上記と同様のコマンドでjarファイルを作成して下さい。
+
+```
+$ ./gradlew jar
+```
+
 
 詳しい実装方法は [sample](https://github.com/Khromium/battlefield/blob/master/sample/src/main/java/rps/Engine.java) を確認して下さい
 
