@@ -94,7 +94,7 @@
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </HBox.margin>
                         </Button>
-                        <Button fx:id="run_once" mnemonicParsing="false" onAction="#buttonsHandler" text="Run in once" />
+                        <Button fx:id="run_once" mnemonicParsing="false" onAction="#buttonsHandler" text="Run once" />
                     </children>
                 </HBox>
             </children>

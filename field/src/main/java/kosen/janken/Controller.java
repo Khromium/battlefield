@@ -62,24 +62,70 @@ public class Controller {
                 }
                 break;
             case "run_once": //一度実行
-                if (playerTwoJar != null && playerOneJar != null)/* executeTask()*/ ;
+                if (playerTwoJar != null && playerOneJar != null) new ExecuteTasks(1).start();
                 break;
             case "run_10000":
                 if (playerTwoJar != null && playerOneJar != null)
 
-                    new ExecuteTasks().start();
+                    new ExecuteTasks(10000).start();
                 break;
         }
 
     }
 
+
+
+
+    public RPSListener loadClass(File file) {
+        try {
+            URLClassLoader load =
+                    URLClassLoader.newInstance(new URL[]{file.toURI().toURL()});
+            //クラスをロード
+            Class cl = null;
+            cl = load.loadClass("rps.Engine");
+            return (RPSListener) cl.newInstance();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    public File getJarFile() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");
+        File userDirectory = new File(".");
+        fileChooser.setInitialDirectory(userDirectory);
+
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Jar File", "*.jar"));
+        return fileChooser.showOpenDialog(main.getScene().getWindow());
+    }
+
     class ExecuteTasks extends Thread {
+        int count = 0;
+
+        /**
+         * constructor
+         *
+         * @param count 何回実行するか
+         */
+        public ExecuteTasks(int count) {
+            this.count = count;
+        }
+
         @Override
         public void run() {
             int team1VictoryCount = 0;
             int team2VictoryCount = 0;
 
-            for (int i = 0; i < 10000; i++) {
+            for (int i = 0; i < count; i++) {
                 Pair<RPS, RPS> result1 = playerRPS1.sendRPS();
                 Pair<RPS, RPS> result2 = playerRPS2.sendRPS();
                 int team1Victory = countVictory(result1, result2);
@@ -90,16 +136,12 @@ public class Controller {
                 final int team2 = team2VictoryCount;
                 Platform.runLater(() -> condition1.setText("勝利数：" + team1));
                 Platform.runLater(() -> condition2.setText("勝利数：" + team2));
-                if (i % 10 == 0) {
+                if (i % 20 == 0) {//全てを表示するととても重いので間引く
                     Platform.runLater(() -> player11.setImage(result2Image(result1.getKey())));
                     Platform.runLater(() -> player12.setImage(result2Image(result1.getValue())));
                     Platform.runLater(() -> player21.setImage(result2Image(result2.getKey())));
                     Platform.runLater(() -> player22.setImage(result2Image(result2.getValue())));
                 }
-//                player11.setImage(result2Image(result1.getKey()));
-//                player12.setImage(result2Image(result1.getValue()));
-//                player21.setImage(result2Image(result2.getKey()));
-//                player22.setImage(result2Image(result2.getValue()));
 
                 playerRPS1.onResult(team1Victory, result1, result2);
                 playerRPS2.onResult(team2Victory, result2, result1);
@@ -117,7 +159,6 @@ public class Controller {
 
         private int countVictory(Pair<RPS, RPS> origin, Pair<RPS, RPS> enemy) {
             System.out.println("自:" + origin.getKey().getRpsString() + ":" + origin.getValue().getRpsString() + "敵:" + enemy.getKey().getRpsString() + ":" + enemy.getValue().getRpsString());
-            //        System.out.println("x" + (enemy.getKey().getRps() + enemy.getValue().getRps() * 3) + " y" + (origin.getKey().getRps() + origin.getValue().getRps() * 3));
             int[][] vicotryMap =
                     {{0, 2, 0, 2, 2, 0, 0, 0, 0},//縦が自分、横が敵
                             {1, 1, 0, 1, 1, 0, 0, 0, 0},
@@ -131,55 +172,5 @@ public class Controller {
             return vicotryMap[origin.getKey().getRps() + origin.getValue().getRps() * 3][enemy.getKey().getRps() + enemy.getValue().getRps() * 3];
         }
 
-    }
-
-
-    public RPSListener loadClass(File file) {
-        try {
-            URLClassLoader load =
-                    URLClassLoader.newInstance(new URL[]{file.toURI().toURL()});
-            //クラスをロード
-            Class cl = null;
-            cl = load.loadClass("rps.Engine");
-            return (RPSListener) cl.newInstance();
-
-
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-
-    /**
-     * 勝利判定
-     *
-     * @param origin 自分
-     * @param enemy  敵
-     * @return
-     */
-    private boolean isVictory(RPS origin, RPS enemy) {
-        if (origin.getRps() == RPS.PAPER && enemy.getRps() == RPS.ROCK
-                || origin.getRps() == RPS.ROCK && enemy.getRps() == RPS.SCISSOR
-                || origin.getRps() == RPS.SCISSOR && enemy.getRps() == RPS.PAPER) return true;
-
-        return false;
-    }
-
-    public File getJarFile() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Resource File");
-        File userDirectory = new File(".");
-        fileChooser.setInitialDirectory(userDirectory);
-
-        fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Jar File", "*.jar"));
-        return fileChooser.showOpenDialog(main.getScene().getWindow());
     }
 }
