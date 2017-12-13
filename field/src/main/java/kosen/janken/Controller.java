@@ -134,6 +134,8 @@ public class Controller {
             case "reset":
                 playerRPS1 = null;
                 playerRPS2 = null;
+                team1name.setText("Team1");
+                team2name.setText("Team2");
                 player11.setImage(rock);
                 player12.setImage(rock);
                 player21.setImage(rock);
