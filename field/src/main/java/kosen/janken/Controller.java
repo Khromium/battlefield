@@ -7,6 +7,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -19,64 +22,156 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+/**
+ * @author 松林圭
+ * 2017年11月作成
+ * TODO:ExecuteTasksが中にあると汚いので暇があったら分離したい
+ */
 public class Controller {
     @FXML
     private Pane main;
     @FXML
-    private Label condition1, condition2;
+    private Label condition1, condition2, team1name, team2name;
     @FXML
     private ImageView player11, player12, player21, player22;
+
+    @FXML
+    private void handleDragOver(DragEvent event) {
+        // ドラッグボードを取得
+        Dragboard board = event.getDragboard();
+        if (board.hasFiles()) {  // ドラッグされているのがファイルなら
+            // コピーモードを設定(これでマウスカーソルが矢印に+のやつになる)
+            event.acceptTransferModes(TransferMode.COPY);
+        }
+    }
+
+    /**
+     * 選択1の中にD&Dされたときに呼ばれる
+     *
+     * @param event
+     */
+    @FXML
+    private void handleOneDropped(DragEvent event) {
+        handleDropped(1, event);
+    }
+
+    /**
+     * 選択2の中にD&Dされたときに呼ばれる
+     *
+     * @param event
+     */
+    @FXML
+    private void handleTwoDropped(DragEvent event) {
+        handleDropped(2, event);
+    }
+
+    /**
+     * D&D関係のハンドラ
+     *
+     * @param index どちらの選択に落ちてきたか
+     * @param event
+     */
+    private void handleDropped(int index, DragEvent event) {
+        // ドラッグボードを取得
+        Dragboard board = event.getDragboard();
+        //ファイルが一つだけあって、かつディレクトリじゃないときのみ
+        if (board.hasFiles() && board.getFiles().size() == 1 && !board.getFiles().get(0).isDirectory()) {
+            loadTeamJar(index, board.getFiles().get(0));
+            // ドロップ受け入れ
+            event.setDropCompleted(true);
+        } else {    // ファイル以外なら
+            // ドロップ受け入れ拒否
+            event.setDropCompleted(false);
+        }
+    }
 
     public final Image rock = new Image(getClass().getResourceAsStream("/rock.png"));
     public final Image paper = new Image(getClass().getResourceAsStream("/paper.png"));
     public final Image scissor = new Image(getClass().getResourceAsStream("/scissor.png"));
 
-    private File playerOneJar, playerTwoJar;
     private RPSListener playerRPS1, playerRPS2;
 
     private Stage primaryStage;
 
+    /**
+     * 初期化処理
+     *
+     * @param primaryStage
+     */
     public void init(Stage primaryStage) {
         this.primaryStage = primaryStage;
-
         player11.setImage(rock);
         player12.setImage(rock);
         player21.setImage(rock);
         player22.setImage(rock);
     }
 
+    /**
+     * ボタン処理系のメソッド
+     *
+     * @param event
+     */
     public void buttonsHandler(ActionEvent event) {
+        File jarFile;
         switch (((Button) event.getSource()).getId()) {
             case "select_one"://ファイル取得
-                playerOneJar = getJarFile();
-                if (playerOneJar != null) {
-                    playerRPS1 = loadClass(playerOneJar);
-                    condition1.setText(playerOneJar.getName() + " is set.");
-                }
+                jarFile = getJarFile();
+                if (jarFile != null)
+                    loadTeamJar(1, jarFile);
                 break;
             case "select_two"://ファイル取得
-                playerTwoJar = getJarFile();
-                if (playerTwoJar != null) {
-                    playerRPS2 = loadClass(playerTwoJar);
-                    condition2.setText(playerOneJar.getName() + " is set.");
-                }
+                jarFile = getJarFile();
+                if (jarFile != null)
+                    loadTeamJar(2, jarFile);
                 break;
             case "run_once": //一度実行
-                if (playerTwoJar != null && playerOneJar != null) new ExecuteTasks(1).start();
+                if (playerRPS2 != null && playerRPS1 != null) new ExecuteTasks(1).start();
                 break;
             case "run_10000":
-                if (playerTwoJar != null && playerOneJar != null)
-
+                if (playerRPS2 != null && playerRPS1 != null)
                     new ExecuteTasks(10000).start();
+                break;
+            case "reset":
+                playerRPS1 = null;
+                playerRPS2 = null;
+                player11.setImage(rock);
+                player12.setImage(rock);
+                player21.setImage(rock);
+                player22.setImage(rock);
+                condition1.setText("module data cleared");
+                condition2.setText("module data cleared");
                 break;
         }
 
     }
 
+    private void loadTeamJar(int index, File jarFile) {
+        if (index == 1) {
+            playerRPS1 = loadClass(jarFile);
+            if (playerRPS1 != null) {
+                team1name.setText(playerRPS1.setTeamName() + "㌠");
+                condition1.setText(jarFile.getName() + " is set.");
+            } else {
+                condition1.setText("ERROR!!");
+            }
+        } else if (index == 2) {
+            playerRPS2 = loadClass(jarFile);
+            if (playerRPS2 != null) {
+                team2name.setText(playerRPS2.setTeamName() + "㌠");
+                condition2.setText(jarFile.getName() + " is set.");
+            } else {
+                condition2.setText("ERROR!!");
+            }
+        }
+    }
 
-
-
-    public RPSListener loadClass(File file) {
+    /**
+     * クラスファイルのロード
+     *
+     * @param file
+     * @return
+     */
+    private RPSListener loadClass(File file) {
         try {
             URLClassLoader load =
                     URLClassLoader.newInstance(new URL[]{file.toURI().toURL()});
@@ -97,7 +192,12 @@ public class Controller {
     }
 
 
-    public File getJarFile() {
+    /**
+     * Jarファイルpicker
+     *
+     * @return
+     */
+    private File getJarFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
         File userDirectory = new File(".");
@@ -108,6 +208,9 @@ public class Controller {
         return fileChooser.showOpenDialog(main.getScene().getWindow());
     }
 
+    /**
+     * スレッドをメインと分けて応答がなくなるのを防ぐ
+     */
     class ExecuteTasks extends Thread {
         int count = 0;
 
@@ -148,6 +251,12 @@ public class Controller {
             }
         }
 
+        /**
+         * 結果を画像に変換
+         *
+         * @param rps
+         * @return
+         */
         public Image result2Image(RPS rps) {
             if (rps.getRps() == RPS.ROCK)
                 return rock;
@@ -157,6 +266,13 @@ public class Controller {
                 return scissor;
         }
 
+        /**
+         * 勝利数のカウント。高速化のために配列にしている
+         *
+         * @param origin 自チームの出した手
+         * @param enemy  敵㌠の出した手
+         * @return
+         */
         private int countVictory(Pair<RPS, RPS> origin, Pair<RPS, RPS> enemy) {
             System.out.println("自:" + origin.getKey().getRpsString() + ":" + origin.getValue().getRpsString() + "敵:" + enemy.getKey().getRpsString() + ":" + enemy.getValue().getRpsString());
             int[][] vicotryMap =
