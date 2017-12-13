@@ -22,7 +22,7 @@ $ ./gradlew jar
 ビルドしたプロジェクトを自分のプロジェクトに取り込みます。
 sampleを用いる場合は　`sample/libs` に配置して下さい。
 
-プロジェクト内にパッケージ `rps`　を作成して、その中に `Engine` クラスを作成。 `RCSListener` をimplementsして下さい。
+プロジェクト内にパッケージ `rps`　を作成して、その中に `Engine` クラスを作成。 `RPSListener` をimplementsして下さい。
 アルゴリズムを一通り書き終わった上記と同様のコマンドでjarファイルを作成して下さい。
 
 ```

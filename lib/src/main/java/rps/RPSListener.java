@@ -19,4 +19,6 @@ public interface RPSListener {
      * @return
      */
     Pair<RPS, RPS> sendRPS();
+
+    String setTeamName();
 }
