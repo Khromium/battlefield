@@ -335,13 +335,14 @@ public class Controller {
                 }
                 team1VictoryCount = Integer.parseInt(condition1.getText().replace(victoryHeader, ""));
                 team2VictoryCount = Integer.parseInt(condition2.getText().replace(victoryHeader, ""));
+                final int dispResult1 = team1VictoryCount, dispResult2 = team2VictoryCount;
                 if (team1VictoryCount > team2VictoryCount) {
-                    Platform.runLater(() -> matchresult.setText(matchresult.getText() + "勝利:" + team1name.getText() + "\n"));
+                    Platform.runLater(() -> matchresult.setText(matchresult.getText() + "勝利:" + team1name.getText() + "  "+dispResult1 + ":" + dispResult2 + "\n"));
                 } else if (team1VictoryCount < team2VictoryCount) {
-                    Platform.runLater(() -> matchresult.setText(matchresult.getText() + "勝利:" + team2name.getText() + "\n"));
+                    Platform.runLater(() -> matchresult.setText(matchresult.getText() + "勝利:" + team2name.getText() + "  "+dispResult1 + ":" + dispResult2 + "\n"));
 
                 } else {
-                    Platform.runLater(() -> matchresult.setText(matchresult.getText() + "勝利:引き分け \n"));
+                    Platform.runLater(() -> matchresult.setText(matchresult.getText() + "勝利:引き分け" + dispResult1 + ":" + dispResult2 + " \n"));
 
                 }
             }

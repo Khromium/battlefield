@@ -7,8 +7,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-    private static final int MIN_SCREEN_WIDTH = 1280;
-    private static final int MIN_SCREEN_HEIGHT = 720;
+    private static final int MIN_SCREEN_WIDTH = 1000;
+    private static final int MIN_SCREEN_HEIGHT = 640;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
