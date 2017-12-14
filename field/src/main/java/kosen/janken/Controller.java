@@ -151,7 +151,7 @@ public class Controller {
         if (index == 1) {
             playerRPS1 = loadClass(jarFile);
             if (playerRPS1 != null) {
-                team1name.setText(playerRPS1.setTeamName() + "㌠");
+                team1name.setText(playerRPS1.setTeamName() + "チーム");
                 condition1.setText(jarFile.getName() + " is set.");
             } else {
                 condition1.setText("ERROR!!");
@@ -159,7 +159,7 @@ public class Controller {
         } else if (index == 2) {
             playerRPS2 = loadClass(jarFile);
             if (playerRPS2 != null) {
-                team2name.setText(playerRPS2.setTeamName() + "㌠");
+                team2name.setText(playerRPS2.setTeamName() + "チーム");
                 condition2.setText(jarFile.getName() + " is set.");
             } else {
                 condition2.setText("ERROR!!");
