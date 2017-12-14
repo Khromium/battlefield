@@ -34,7 +34,7 @@ public class Engine implements RPSListener {
 
     @Override
     public String setTeamName() {
-        String name = "名無し"+new Random(1000).toString();
+        String name = "名無し" + new Random().nextInt(1000);
         return name;
     }
 }
