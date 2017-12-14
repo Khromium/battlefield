@@ -137,6 +137,11 @@
                 <HBox alignment="CENTER_RIGHT">
                     <children>
                         <Button fx:id="reset" mnemonicParsing="false" onAction="#buttonsHandler" text="Reset" textFill="RED" />
+                  <Button fx:id="fivematch" mnemonicParsing="false" onAction="#buttonsHandler" text="5試合連続">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Button>
                         <Button fx:id="run_10000" mnemonicParsing="false" onAction="#buttonsHandler" text="Run 10000">
                             <HBox.margin>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -145,6 +150,11 @@
                         <Button fx:id="run_once" mnemonicParsing="false" onAction="#buttonsHandler" text="Run once" />
                     </children>
                 </HBox>
+            <HBox prefHeight="89.0" prefWidth="600.0">
+               <children>
+                  <Label fx:id="matchresult" />
+               </children>
+            </HBox>
             </children>
         </VBox>
     </children>

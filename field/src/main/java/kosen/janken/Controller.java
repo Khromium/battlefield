@@ -31,7 +31,7 @@ public class Controller {
     @FXML
     private Pane main;
     @FXML
-    private Label condition1, condition2, team1name, team2name;
+    private Label condition1, condition2, team1name, team2name, matchresult;
     @FXML
     private ImageView player11, player12, player21, player22;
 
@@ -89,9 +89,11 @@ public class Controller {
     public final Image paper = new Image(getClass().getResourceAsStream("/paper.png"));
     public final Image scissor = new Image(getClass().getResourceAsStream("/scissor.png"));
 
+
     private RPSListener playerRPS1, playerRPS2;
 
-    private Stage primaryStage;
+    public static final String victoryHeader = "勝利数：";
+
 
     /**
      * 初期化処理
@@ -99,7 +101,6 @@ public class Controller {
      * @param primaryStage
      */
     public void init(Stage primaryStage) {
-        this.primaryStage = primaryStage;
         player11.setImage(rock);
         player12.setImage(rock);
         player21.setImage(rock);
@@ -131,6 +132,11 @@ public class Controller {
                 if (playerRPS2 != null && playerRPS1 != null)
                     new ExecuteTasks(10000).start();
                 break;
+            case "fivematch":
+                if (playerRPS2 == null || playerRPS1 == null) break;
+                new ExecuteTasksFive(0).start();
+
+                break;
             case "reset":
                 playerRPS1 = null;
                 playerRPS2 = null;
@@ -140,6 +146,7 @@ public class Controller {
                 player12.setImage(rock);
                 player21.setImage(rock);
                 player22.setImage(rock);
+                matchresult.setText("");
                 condition1.setText("module data cleared");
                 condition2.setText("module data cleared");
                 break;
@@ -229,7 +236,6 @@ public class Controller {
         public void run() {
             int team1VictoryCount = 0;
             int team2VictoryCount = 0;
-
             for (int i = 0; i < count; i++) {
                 Pair<RPS, RPS> result1 = playerRPS1.sendRPS();
                 Pair<RPS, RPS> result2 = playerRPS2.sendRPS();
@@ -239,8 +245,8 @@ public class Controller {
                 team2VictoryCount += team2Victory;
                 final int team1 = team1VictoryCount;
                 final int team2 = team2VictoryCount;
-                Platform.runLater(() -> condition1.setText("勝利数：" + team1));
-                Platform.runLater(() -> condition2.setText("勝利数：" + team2));
+                Platform.runLater(() -> condition1.setText(victoryHeader + team1));
+                Platform.runLater(() -> condition2.setText(victoryHeader + team2));
                 if (i % 20 == 0) {//全てを表示するととても重いので間引く
                     Platform.runLater(() -> player11.setImage(result2Image(result1.getKey())));
                     Platform.runLater(() -> player12.setImage(result2Image(result1.getValue())));
@@ -259,7 +265,7 @@ public class Controller {
          * @param rps
          * @return
          */
-        public Image result2Image(RPS rps) {
+        protected Image result2Image(RPS rps) {
             if (rps.getRps() == RPS.ROCK)
                 return rock;
             else if (rps.getRps() == RPS.PAPER)
@@ -275,7 +281,7 @@ public class Controller {
          * @param enemy  敵㌠の出した手
          * @return
          */
-        private int countVictory(Pair<RPS, RPS> origin, Pair<RPS, RPS> enemy) {
+        protected int countVictory(Pair<RPS, RPS> origin, Pair<RPS, RPS> enemy) {
             System.out.println("自:" + origin.getKey().getRpsString() + ":" + origin.getValue().getRpsString() + "敵:" + enemy.getKey().getRpsString() + ":" + enemy.getValue().getRpsString());
             int[][] vicotryMap =
                     {{0, 2, 0, 2, 2, 0, 0, 0, 0},//縦が自分、横が敵
@@ -290,5 +296,55 @@ public class Controller {
             return vicotryMap[origin.getKey().getRps() + origin.getValue().getRps() * 3][enemy.getKey().getRps() + enemy.getValue().getRps() * 3];
         }
 
+    }
+
+    /**
+     * スレッドをメインと分けて応答がなくなるのを防ぐ
+     */
+    class ExecuteTasksFive extends ExecuteTasks {
+
+        public ExecuteTasksFive(int count) {
+            super(count);
+        }
+
+        @Override
+        public void run() {
+            for (int j = 0; j < 5; j++) {
+                int team1VictoryCount = 0;
+                int team2VictoryCount = 0;
+                for (int i = 0; i < 10000; i++) {
+                    Pair<RPS, RPS> result1 = playerRPS1.sendRPS();
+                    Pair<RPS, RPS> result2 = playerRPS2.sendRPS();
+                    int team1Victory = countVictory(result1, result2);
+                    int team2Victory = countVictory(result2, result1);
+                    team1VictoryCount += team1Victory;
+                    team2VictoryCount += team2Victory;
+                    final int team1 = team1VictoryCount;
+                    final int team2 = team2VictoryCount;
+                    Platform.runLater(() -> condition1.setText(victoryHeader + team1));
+                    Platform.runLater(() -> condition2.setText(victoryHeader + team2));
+                    if (i % 20 == 0) {//全てを表示するととても重いので間引く
+                        Platform.runLater(() -> player11.setImage(result2Image(result1.getKey())));
+                        Platform.runLater(() -> player12.setImage(result2Image(result1.getValue())));
+                        Platform.runLater(() -> player21.setImage(result2Image(result2.getKey())));
+                        Platform.runLater(() -> player22.setImage(result2Image(result2.getValue())));
+                    }
+
+                    playerRPS1.onResult(team1Victory, result1, result2);
+                    playerRPS2.onResult(team2Victory, result2, result1);
+                }
+                team1VictoryCount = Integer.parseInt(condition1.getText().replace(victoryHeader, ""));
+                team2VictoryCount = Integer.parseInt(condition2.getText().replace(victoryHeader, ""));
+                if (team1VictoryCount > team2VictoryCount) {
+                    Platform.runLater(() -> matchresult.setText(matchresult.getText() + "勝利:" + team1name.getText() + "\n"));
+                } else if (team1VictoryCount < team2VictoryCount) {
+                    Platform.runLater(() -> matchresult.setText(matchresult.getText() + "勝利:" + team2name.getText() + "\n"));
+
+                } else {
+                    Platform.runLater(() -> matchresult.setText(matchresult.getText() + "勝利:引き分け \n"));
+
+                }
+            }
+        }
     }
 }
